@@ -1,0 +1,758 @@
+%\documentclass[aps,prb,twocolumn,groupedaddress,bibnotes,citeautoscript]{revtex4-1}
+\documentclass[aps,prl,preprint,superscriptaddress]{revtex4-1}
+%\documentclass[aps,prl,reprint,groupedaddress]{revtex4-1}
+
+\usepackage{graphicx}% Include figure files
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{bm}% bold math
+\usepackage{color}
+\usepackage{amsmath}
+
+
+\bibliographystyle{apsrev4-1}
+
+\begin{document}
+
+\begin{center}
+{\bf Useful Notes on Statistics}
+\end{center}
+
+{\bf Moment generating functions:} The moment generating function (mgf) is defined as:
+%
+\begin{equation}
+M(t) = E[e^{t X}] = 1 + t\,X + \frac{1}{2!}\, t^2\, X^2 + \frac{1}{3!}\, t^3\, X^3 + \dots
+\end{equation}
+%
+For two independent random variables $X$ and $Y$, with mgfs $M_1(t)$ and $M_2(t)$, mgf of their 
+sum is given by
+%
+\begin{equation}
+E[X+Y] = E[e^{t\, (X+Y)}] = E[e^{t\, X}] \, E[e^{t\, Y}] = M_1(t) \, M_2(t)
+\end{equation}
+%
+The mgf of the linear function $a + b\, X$ is given by
+%
+\begin{equation}
+E[a + b\, X] = E[e^{a\,t + b\,t\, X}] = e^{a\,t} \, M(b\,t)
+\end{equation}
+%
+
+{\bf Binomial Distribution:} The probability density function is given by
+%
+\begin{equation}
+P(x) = \left(\begin{array}{c} n \\ x \end{array} \right)\, P^x\, Q^{1-x}
+\end{equation}
+%
+where $P$ is the success probability, $Q=1-P$ and $x$ is the number of observations. The mgf of the binomial
+distribution is given by
+%
+\begin{equation}
+M(t) = E[e^{t X}] = \sum_{x}\, \frac{n !}{x ! \, (n-x) !}\, e^{tx}\, P^x\, Q^{1-x} = 
+     (e^t\, P + Q)^n
+\end{equation}
+%
+The moment generating function is useful for computing mean and variance:
+%
+\begin{equation}
+M'(0) = E[X] = nP \,\,\, , \,\,\, M''(0) = E[X^2] = nP + n(n-1) P^2
+\end{equation}
+%
+thus, $\mu = E[X] = nP$ and $\sigma^2 = {\rm Var}[X] = E[X^2] - E[X]^2 = nP (1-P) = nPQ$.
+
+\vspace{0.5cm}
+
+{\bf Normal Distribution:} The probability density function of the normal distribution is given by
+%
+\begin{equation}
+P(x) = \frac{1}{\sqrt{2 \pi}\, \sigma}\, \exp\left[ -\frac{(x-\mu)^2}{2\, \sigma^2} \right]
+\end{equation}
+%
+Then, the mgf can be computed as
+%
+\begin{eqnarray}
+M(t) = E[e^{tX}] &=& \frac{1}{\sqrt{2 \pi}\, \sigma}\, \int_{-\infty}^{\infty}\, dx\, \exp\left[ -\frac{1}{2 \sigma^2}\, 
+ \left( (x-\mu)^2 - 2\, \sigma^2\, t x \right) \right] \nonumber\\
+%
+ &=& \exp\left[ \mu t + \frac{1}{2}\, \sigma^2\, t^2 \right]
+\end{eqnarray}
+%
+Using the mgf of the normal distribution, we can show that the varaible $Z = (X - \mu)/\sigma$ is a normal 
+variate, i.e normal distribution with mean 0 and standard deviation 1 ($N(0,1)$).
+The mgf for $Z$ is given by
+%
+\begin{equation}
+M_Z(t) = e^{-\mu t /\sigma}\, M(t/\sigma) = e^{\frac{1}{2}\, t^2}
+\end{equation}
+%
+which is the mgf of the normal variate.
+
+\vspace{0.5cm}
+{\bf Central Limit Theorem:} The sum of a large number of independent random variables will be approximately
+normally distributed. Let us prove: Consider the sum of $n$ independent random variables $Y = X_1 + X_2 + \dots + X_n$.
+Let $\mu$ and $\sigma^2$ be the mean and variance of $Y$ and
+let $M_i(t)$ be the mgf of $X_i - \mu_i$. Then, mgf of $\sum_i\, (X_i - \mu_i)$ is
+%
+\begin{equation}
+ E[\exp( t(X_1-\mu_1) + t(X_2-\mu_2) \dots)] = \prod_i\, M_i(t) 
+\end{equation}
+%
+The mgf of the variate $(Y-\mu)/\sigma$ is then given by
+%
+\begin{equation}
+M^*(t) = \prod_i\, M_i(t/\sigma) = \prod_i\, \left( 1 + \frac{\sigma_i^2}{2}\, \frac{t^2}{\sigma^2} + 
+          \frac{\mu_{3i}}{3 !}\, \frac{t^3}{\sigma^3} + \dots \right)
+\end{equation}
+%
+since $\mu = \mu_1 + \mu_2 + \dots + \mu_n$. Taking the log of both sides
+%
+\begin{eqnarray}
+\log M^*(t) &=& \sum_{i}^n\, \log M_i(t/\sigma) \simeq \sum_i^n\, \log \left( 1 + 
+                \frac{1}{2}\, \frac{\sigma_i^2 t^2}{\sigma^2} \right) \nonumber\\ 
+            &\simeq& \sum_i^n\, \frac{1}{2}\, \frac{\sigma_i^2\, t^2}{\sigma^2} = \frac{1}{2}\, t^2
+\end{eqnarray}
+%
+since for larger $n$, $\sigma^2$ will be large as well ($\sigma^2 = \sum_i\, \sigma_i^2$), so the
+series expansion in $\sigma_i/\sigma$ is convergent. Thus, the mgf of the variate
+$(Y-\mu)/\sigma$ is $e^{\frac{1}{2}\, t^2}$ which is the mgf of the standard normal variate.
+
+A corlollary of the central limit theorem is that the distributions of the sample means is
+approximately normally distributed: Let $X_i$ be a sample from a population. The sample mean of $n$ samples
+is given by
+%
+\begin{equation}
+\bar{X}_n = \frac{1}{n} \sum_i^n\, X_i
+\end{equation}
+%
+The expected value of $\bar{X}_n$ is computed as
+%
+\begin{equation}
+E[\bar{X}_n] = \frac{1}{n}\sum_i^n\, E[X_i] = \mu
+\end{equation}
+%
+where $\mu$ is the population mean. Here, we assume that all of the $X_i$s are identical and independently
+distributed (iid). The variance of $\bar{X}_n$ is computed as
+%
+\begin{eqnarray}
+E[\bar{X}_n^2] &=& E\left[ \left( \frac{1}{n}\, \sum_{i=1}^n\, X_i \right)^2 \right] \nonumber\\
+               &=& \frac{1}{n^2}\, E\left[ \sum_{i=1}^n\, X_i^2 + 2\, \sum_{i=1}^n\, \sum_{j>i}\, X_i\, X_j \right] \nonumber\\
+               &=& \frac{1}{n}\, E[X_i^2] + \frac{2}{n}\, \frac{n (n-1)}{2}\, \mu^2 \nonumber\\
+               &=& \frac{1}{n}\, (\sigma^2 + \mu^2) + \frac{n-1}{n}\, \mu^2
+\end{eqnarray}
+%
+where we have used $E[X_i\, X_j] = E[X_i]\, E[X_j]$ when $j\neq i$.
+Then, ${\rm Var}[\bar{X}_n] = E[\bar{X}_n^2] - E[\bar{X}_n]^2$, so
+%
+\begin{equation}
+{\rm Var}[\bar{X}_n] = \frac{\sigma^2}{n}
+\end{equation}
+%
+Thus the central limit theorem on the variate $(\bar{X}_n - \mu)/(\sigma/\sqrt{n})$ gives us:
+%
+\begin{equation}
+\frac{\bar{X}_n - \mu}{\sigma/\sqrt{n}} \sim N(0,1)
+\end{equation}
+%
+
+\vspace{0.5cm}
+
+{\bf Poisson distribution:} The Poisson distribution is a limit of binomial distribution when the probablity of 
+success $P = \mu/n$ is low but the number of trials $n$ is very large. To arrive at Possion distribution, we rewrite the 
+probability density function of the binomial distribution as follows:
+%
+\begin{eqnarray}
+P(x) &=& \frac{n!}{x!\, (n-x)!}\, \left(\frac{\mu}{n}\right)^x\, \left( 1 - \frac{\mu}{n} \right)^{n-x} \nonumber\\
+     &=& \left[ \frac{n}{n} \cdot \frac{n-1}{n}\, \dots \, \frac{n-x+1}{n} \right]\, \frac{\mu^x}{x!}\, 
+         \left( 1 - \frac{\mu}{n} \right)^{n-x}
+\end{eqnarray}
+%
+The term in the brackets tend to $1$ as $n\rightarrow \infty$, while $(1-\mu/n)^n \rightarrow e^{-\mu}$ and
+$(1-\mu/n)^x \rightarrow 1$. Then, the above term reduces to
+%
+\begin{equation}
+P(x) = \frac{e^{-\mu}\, \mu^x}{x!}
+\end{equation}
+%
+It is straightforward to show that the mgf of the Poisson distribution is given by $e^{-\mu}\, e^{\mu\, t}$.
+
+\vspace{0.5cm}
+
+{\bf $\chi^2$ distribution:} The $\chi^2$ distribution with $f$ degrees of freedom (dom) is defined as a 
+sum of $f$ iid normal variates $Z_i^2$:
+%
+\begin{equation}
+\Upsilon = Z_1^2 + Z_2^2 + \dots + Z_f^2
+\end{equation}
+%
+For 1 dof, $E[\Upsilon] = E[Z^2] = 1$ and $E[\Upsilon^2] = E[Z^4] = 3$. The $\chi^2_{[f]}$ distribution then satisfies:
+%
+\begin{equation}
+E[\Upsilon] = f \,\,\, , \,\,\, {\rm Var}[\Upsilon] = 2\, f
+\end{equation}
+%
+Let's compute the mgf of $\chi^2_{[f]}$. Fisrt, for the $\chi^2_{[1]}$ variate
+%
+\begin{eqnarray}
+M(t) = E[e^{tZ^2}] = \frac{1}{\sqrt{2\pi}}\, \int_{-\infty}^{\infty}\, dz\, e^{-\frac{1}{2}\, z^2(1-2t)}
+     = (1-2t)^{-1/2}
+\end{eqnarray}
+%
+For $\chi^2_{[f]}$, the mgf will be the product of $f$ mgfs which is 
+%
+\begin{equation}
+M_{\Upsilon}(t) = (1-2t)^{-\frac{1}{2} f}
+\end{equation}
+%
+Now, we can show that this mgf can be obtained from the density function 
+$f(y) = \frac{1}{A(f)}\, y^{\frac{1}{2}f-1}\, e^{-\frac{1}{2} y}$ where $0 \leq y < \infty$ and 
+$A(f) = 2^{\frac{1}{2}f}\, \Gamma(\frac{1}{2}f)$. 
+%
+\begin{equation}
+M_f(t) = E[e^{tY}] = \int_0^{\infty}\, e^{ty}\, f(y)\, dy = \frac{1}{A(f)}\, \int_0^{\infty}\, e^{ty-\frac{1}{2}y}\,
+                     y^{\frac{1}{2}f-1}\, dy
+\end{equation}
+%
+Using the substitution $w = (1-2t)\, y$ we get
+%
+\begin{equation}
+M_f(t) = (1-2t)^{-\frac{1}{2}f}\, \frac{1}{A(f)}\, \int_0^{\infty}\, dw\, w^{\frac{1}{2}f-1}\, e^{-\frac{1}{2}w} 
+       = (1-2t)^{-\frac{1}{2}f}
+\end{equation}
+%
+Using the properties of the $\Gamma$-function, one can show that (using partial integration)
+%
+\begin{equation}
+A(f) = \Bigg\{ \begin{array}{c} 1 \cdot 3 \cdot 5 \cdot \dots \cdot (f-2)\, \sqrt{2\pi} , \qquad {\rm odd}\,\, f \\
+                                2 \cdot 4 \cdot 6 \cdot \dots \cdot (f-2) \cdot 2, \qquad {\rm even}\,\, f
+       \end{array}
+\end{equation}
+%
+
+\vspace{0.5cm}
+
+Let us consider an important application of the $\chi^2$ distribution. Let $Z_1, Z_2, \dots, Z_n$ be iid normal
+variates and $\Upsilon_1, \Upsilon_2, \dots, \Upsilon_n$ be linear functions of them:
+%
+\begin{eqnarray} 
+&& \Upsilon_1 = a_1\, Z_1 + a_2\, Z_2 + \dots + a_n\, Z_n \nonumber\\
+&& \Upsilon_2 = b_1\, Z_1 + b_2\, Z_2 + \dots + b_n\, Z_n \nonumber\\
+&& \dots \dots \nonumber\\
+&& \Upsilon_n = u_1\, Z_1 + u_2\, Z_2 + \dots + u_n\, Z_n 
+\end{eqnarray}
+%
+with ${a_i\, , b_i\, , \dots , u_i}$ being a set of {\bf orthonormal vectors}. Then, it is clear that 
+%
+\begin{equation}
+\sum_i \Upsilon_i^2 = \sum_i Z_i^2
+\end{equation}
+%
+The orthonormality also implies that all the $\Upsilon_i$'s are independently distributed; for example
+%
+\begin{eqnarray}
+{\rm Cov}[\Upsilon_1, \Upsilon_2] &=& E[(a_1\, Z_1 + \dots + a_n\, Z_n) \cdot (b_1\, Z_1 + \dots + b_n\, Z_n)] \nonumber\\
+  &=& \sum_{i,j}\, (a_i\, b_j)\, E[Z_i\, Z_j] \nonumber\\
+  &=& \sum_i\, a_i\, b_i\, E[Z_i^2] = \sum_i\, a_i\, b_i = 0
+\end{eqnarray}
+%
+since for $i\neq j$, $E[Z_i\, Z_j] = E[Z_i]\, E[Z_j] = 0$.
+Using the identity, it is possible to work out the sampling distribution of the variance.
+
+\vspace{0.5cm}
+{\bf Sampling distribution of variance:} Consider the sum of squared deviations from the mean
+%
+\begin{equation}
+S^2 = \sum_i\, \left( x_i - \bar{x} \right)^2
+\end{equation}
+%
+where $x_i$'s are sample distributions and $\bar{x}$ is the mean of the sample distribution,
+from a population with mean $\mu$ and variance $\sigma^2$. Then, 
+the following identity holds:
+%
+\begin{eqnarray}
+\sum_i \left(x_i - \bar{x}\right)^2 &=& \sum_i \left( (x_i - \mu)^2 - (\bar{x}-\mu) \right)^2 \nonumber\\
+ &=& \sum_i \left(x_i - \mu\right)^2 - n(\bar{x}-\mu)^2
+\end{eqnarray}
+%
+Then, the expectation value of $S^2$ is given by
+%
+\begin{eqnarray}
+E[S^2] &=& \sum_i\, E\left[ (x_i - \mu)^2 \right] - n\, E\left[ (\bar{x}-\mu)^2\right] \nonumber\\
+       &=& \sum_i\, {\rm Var}[x_i] - n\, {\rm Var}[\bar{x}] \nonumber\\
+       &=& n\, \sigma^2 - n\, \frac{\sigma^2}{n} = (n-1)\, \sigma^2
+\end{eqnarray}
+%
+Thus, the {\bf unbiased} estimator for the variance is given by
+%
+\begin{equation}
+s^2 = \frac{1}{n-1}\, S^2
+\end{equation}
+%
+Now, we have from the above equations
+%
+\begin{equation}
+\frac{\sum_i ( x_i - \mu)^2}{\sigma^2} = \frac{S^2}{\sigma^2} + \frac{n (\bar{x}-\mu)^2}{\sigma^2}
+\end{equation}
+%
+Assuming that $x_i$ being {\bf normally} distributed, notice that $\left( \frac{\bar{x}-\mu}{\sigma/n} \right)^2$ 
+becomes a $\chi^2_{[1]}$ variate. At the same time, $\sum_i \left( \frac{x_i-\mu}{\sigma} \right)^2$ becomes a
+$\chi^2_{[n]}$ variate. Thus, the above equation implies that $S^2/\sigma^2$ to be a $\chi^2_{[n-1]}$ variate,
+as long as $S^2$ and $\bar{x}$ are independently distributed.
+
+We establish this independence by constructing an orthonormal transformation from a set of normal variates
+$Z_i$ to their linear combinations $\Upsilon_i$:
+%
+\begin{eqnarray}
+&& Z_i = \frac{x_i - \mu}{\sigma} \,\,\,\, , \,\,\,\, i=1,2, \dots, n \nonumber\\
+&& \Upsilon_1 = \frac{1}{\sqrt{n}}\, Z_1 + \dots + \frac{1}{\sqrt{n}}\, Z_n 
+\end{eqnarray}
+%
+Notice that 
+%
+\begin{eqnarray}
+&& \Upsilon_1 = \frac{1}{\sqrt{n}}\, \sum_i \left( \frac{x_i - \mu}{\sigma} \right) = \frac{\bar{x} - \mu}{\sigma/\sqrt{n}}
+\nonumber\\
+&& \rightarrow \, \Upsilon_1^2 = \frac{n(\bar{x}-\mu)^2}{\sigma^2} \sim \chi^2_{[1]} \nonumber\\
+&& \sum_i\, Z_i^2 = \frac{\sum_i ( x_i - \mu)^2}{\sigma^2}
+\end{eqnarray}
+%
+Now, complete the transformation to from $Z_i$ to $\Upsilon_i$ by adding $\Upsilon_2, \dots \Upsilon_n$ on
+$\Upsilon_1$, such that ${\rm Cov}[\Upsilon_i, \Upsilon_j] = \delta_{ij}$. Otrhonormality requires
+%
+\begin{eqnarray}
+&& \sum_{i=1}^n\, Z_i^2 = \Upsilon_1^2 + \sum_{i=2}^n\, \Upsilon_i^2 \nonumber\\
+&& \rightarrow\, 
+\sum_{i=2}^n\, \Upsilon_i^2 = \frac{\sum_i ( x_i - \mu)^2}{\sigma^2} - \frac{n(\bar{x}-\mu)^2}{\sigma^2} 
+ = \frac{S^2}{\sigma^2} ~ \chi^2_{[n-1]}
+\end{eqnarray}
+%
+where each $\Upsilon_i$ is iid and $\chi^2_{[1]}$ by orthonormality. Thus, $S^2$ is $\chi^2_{[n-1]}$ variate.
+
+\vspace{0.5cm}
+
+{\bf t-Distribution:} The Student t-distribution is defined through the random variable T as follows:
+%
+\begin{equation}
+T = \frac{Z}{\sqrt{\Upsilon/f}}
+\end{equation}
+%
+where $\Upsilon$ is a $\chi^2$ variate with f dof and Z is a normal variate. This distribution is 
+useful when the population variance $\sigma^2$ is unknown, but estimated by $s^2$. 
+Since $\frac{\bar{x}-\mu}{\sigma/\sqrt{n}}$ is a normal variate (assuming $x_i$'s are iid and normally
+distributed) and $S^2/\sigma^2$ is a $\chi^2_{[n-1]}$, then
+%
+\begin{equation}
+\frac{(\bar{x}-\mu)}{\sigma/\sqrt{n}} \Bigg/ \sqrt{ \frac{S^2}{(n-1) \sigma^2} } = \frac{\bar{x} - \mu}{s/\sqrt{n}}
+\end{equation}
+%
+will follow the t-distribution with $n-1$ dof.
+
+Let us know calculate the probability density function of the t-distribution. 
+First consider the distribution $V = \sqrt{\Upsilon/f}$ so
+that $T = Z / V$. The cumulative density function for $V$ is given by
+%
+\begin{equation}
+F_V(v) = P[ V \leq v] = P[ \sqrt{\Upsilon/f} \leq v ] = P[\Upsilon \leq f\, v^2] 
+       = F_{\Upsilon}(f\, v^2)
+\end{equation}
+%
+Then, the probability density function is given by
+%
+\begin{eqnarray}
+f_V(v) &=& \frac{d F_V(v)}{d v} = \frac{d F_{\Upsilon}(f\, v^2)}{d v} = 2f\, v\, f_{\Upsilon}(f\, v^2) \nonumber\\
+       &=& \frac{1}{A(f)}\, 2f\, v\, \left( f\, v^2 \right)^{\frac{1}{2}f-1}\, e^{-\frac{1}{2}f\, v^2} \nonumber\\
+\end{eqnarray}
+%
+Now, for the $T$ distribution, we have
+%
+\begin{eqnarray}
+F_{T}(t) &=& P[Z/V \leq t] = \sum_v\, \left( P[ Z \leq vt] \cup P[ v \leq V \leq v + dv] \right) \nonumber\\
+         &=& \int F_Z(vt)\, f_V(v)\, dv \nonumber\\
+f_T(t)   &=& \int f_Z(vt)\, v\, f_v(v)\, dv \nonumber\\
+         &=& \frac{2\, f^{f/2}}{\sqrt{2\pi}\, A(f)}\, \int_0^{\infty}\, e^{-\frac{1}{2}\, v^2\, t^2 - \frac{1}{2}f\, v^2}\, 
+                                                     v^f\, dv
+\end{eqnarray}
+%  
+The integral can be evaluated by the substitution $\xi = v^2\, (f+t^2)$, and after some algebra
+%
+\begin{equation}
+f_T(t) = \frac{A(f+1)}{\sqrt{2\pi\, f}\, A(f)}\, \left( 1 + \frac{t^2}{f} \right)^{-\frac{1}{2}\, (f+1)}
+\end{equation}
+
+t-distribution can be applied to test whether the means of two distributions are the same. Suppose that
+we have $m$ observations on a random variable $X$ ($x_1, \dots, x_m$) and $n$ observations on another
+random variable $Y$ ($y_1, \dots, y_n$). Assuming that $X$ and $Y$ are normally distributed with the same
+variance $\sigma^2$, but different means $\mu_1$ and $\mu_2$, we test the hypotheses $\mu_1 = \mu_2$. 
+We define 
+%
+\begin{eqnarray}
+&& S_1^2 = \sum_{i=1}^m\, \left( x_i - \bar{x} \right)^2 \qquad 
+S_2^2 = \sum_{i=1}^n\, \left( y_i - \bar{y} \right)^2 \nonumber\\
+%
+&& S^2 = S_1^2 + S_2^2 \qquad s^2 = \frac{S^2}{m+n-2}
+\end{eqnarray}
+%
+Then, ${\bar x} - {\bar y}$ will be normally distributed with mean $\mu_1 - \mu_2$ and variance 
+$(1/n + 1/m)\, \sigma^2$, and $S^2$ will follow a $\chi^2$ distribution with $m+n-2$ dof. Then,
+%
+\begin{equation}
+t = \frac{ \bar{x} - \bar{y} }{s\, \sqrt{\frac{1}{n} + \frac{1}{m}} }
+\end{equation}
+%
+will follow a t-distribution with $m+n-2$ dof.
+
+% 
+
+\vspace{0.5cm}
+
+\begin{center}
+{\bf Linear Regression}
+\end{center}
+
+We first consider the case of two variables, mutilvariable extension is straightforward. The observations $Y_i$ 
+are modeled by the following liner function:
+%
+\begin{equation}
+Y_i = \beta_0 + \beta_1\, X_i + \epsilon_i
+\end{equation}
+%
+where $\epsilon_i \sim N(0,\sigma^2)$ are assumed to be iid normal variates. The precition is denoted by hatted symbols, 
+i.e.
+%
+\begin{equation}
+{\hat Y}_i = {\hat \beta}_0 + {\hat \beta}_1\, X_i
+\end{equation}
+%
+where ${\hat \beta}_0$ and ${\hat \beta}_1$ are obtained through least-squares, by minimizing the sum of squared
+errors:
+%
+\begin{equation}
+S^2 = \sum_i \left( Y_i - \beta_0 - \beta_1\, X_i \right)^2
+\end{equation}
+%
+Minimizing with respect to $\beta_0$ and $\beta_1$, we obtain
+%
+\begin{equation}
+{\hat \beta}_1 = \frac{\sum_i\, ( X_i - \bar{X} )\, (Y_i - {\bar Y})}{\sum_i\, (X_i - {\bar X})^2} 
+               = \beta_1 + \frac{\sum_i\, \epsilon_i\, (X_i - {\bar X}) }{\sum_i\, (X_i - {\bar X})^2}  \,\,\,\, , \,\,\,\,
+{\hat \beta}_0 = {\bar Y} - {\hat \beta}_1\, {\bar X}
+\end{equation}
+%
+Equivalently, it is easy to show that
+%
+\begin{eqnarray}
+{\hat \beta}_1 &=& {\rm Cor}(Y,X)\, \frac{S_Y}{S_X} \,\,\, , \,\,\, {\rm Cor}(Y,X) 
+          = \frac{{\rm Cov}(Y,X)}{S_X\, S_Y} \nonumber\\
+{\rm Cov}(X,Y) &=& \frac{1}{n-1}\, \sum_{i=1}^n\, (X_i - {\bar X})\, (Y_i - {\bar Y}) \nonumber\\
+S_X^2 &=& \frac{1}{n-1}\, \sum_{i=1}^n\, (X_i - {\bar X})^2
+\end{eqnarray}
+%
+
+\vspace{0.5cm}
+
+{\bf Prediction and confidence intervals:} For simplifying the algebra, let us subtract ${\bar X}$ from $X_i$
+to normalize:
+%
+\begin{equation}
+{\hat Y}_i = \beta_0 + \beta_1\, (X_i - {\bar X}) + \epsilon_i
+\end{equation}
+%
+this is equivalent to redefining $\beta_0 \rightarrow \beta_0 - \beta_1\, {\bar X}$, which results in
+${\hat \beta}_0 = {\bar Y}$. Now it is easy to see the following apply:
+%
+\begin{eqnarray}
+&& {\bar X} = \beta_0 + \frac{1}{n}\, \sum_i\, \epsilon_i \,\,\,\, , \,\,\,\, 
+{\bar Y} = {\hat \beta}_0 \sim N(\beta_0, \frac{\sigma^2}{n}) \nonumber\\
+&& E[Y_i] = \beta_0 + \beta_1\, (X_i - {\bar X}) \,\,\,\, , \,\,\,\, {\rm Var}[Y_i] = {\rm Var}[\epsilon_i] = \sigma^2 \,\,\,\, , \,\,\,\,
+   Y_i \sim N\left( \beta_0 + \beta_1\, ( X_i - {\bar X}), \sigma^2 \right) \nonumber\\ 
+\end{eqnarray}
+%
+now, 
+%
+\begin{eqnarray}
+{\rm Var}[{\hat \beta}_1] &=& \frac{1}{\left[ \sum_i\, (X_i - {\bar X})^2  \right]^2 }\, 
+    \sum_i\, (X_i - {\bar X})^2\, {\rm Var}[\epsilon_i] \nonumber\\
+                          &=& \frac{\sigma^2}{\sum_i\, (X_i - {\bar X})^2} \nonumber\\  
+\end{eqnarray}
+%
+thus, in summary:
+%
+\begin{equation}
+\boxed{ {\hat \beta}_0 \sim N\left( \beta_0, \frac{\sigma^2}{n} \right) \,\,\,\, , \,\,\,\,
+        {\hat \beta}_1 \sim N\left( \beta_1, \frac{\sigma^2}{\sum_i\, (X_i - {\bar X})^2} \right)  }
+\end{equation}
+%
+If we were to add the ${\bar X}$ term back, $\beta_0 \rightarrow \beta_0 + \beta_1\, {\bar X}$ so 
+${\rm Var}[{\hat \beta}_0] \rightarrow {\bar X}^2\, {\rm Var}[{\hat \beta}_1] + {\rm Var}[{\hat \beta}_0]$,
+which is more widely used.
+%
+Now, consider a {\bf new prediction} ${\hat Y}_{n+1}$ from a {\bf new predictor} $X_{n+1}$, i.e.
+%
+\begin{equation}
+Y_{n+1} = \beta_0 + \beta_1\, (X_{n+1} - {\bar X}) + \epsilon_{n+1} \,\,\,\, , \,\,\,\,
+{\hat Y}_{n+1} = {\hat \beta}_0 + {\hat \beta}_1\, (X_{n+1} - {\bar X})
+\end{equation}
+%
+consider the quantity $W = Y_{n+1} - {\hat Y}_{n+1}$. It is easy to see that $E[W] = 0$. Now, we compute the 
+variance of $W$, which will be related to the {\bf prediction interval}. To proceed, let us
+first note that ${\rm Cov}[Y_{n+1}, {\hat \beta}_0 + {\hat \beta}_1\, (X_{n+1} - {\bar X})] = 0$, since 
+$Y_{n+1}$ is a new data uncorrelated to $Y_i$ from which ${\hat \beta}_{0,1}$ are determined. In addition,
+${\hat \beta}_0$ and ${\hat \beta}_1$ are uncorrelated as well:
+%
+\begin{eqnarray}
+{\rm Cov}[{\hat \beta}_0, {\hat \beta}_1] &=& {\rm Cov}\left[ {\hat \beta}_0, 
+         \beta_1 + \frac{\sum_i\, \epsilon_i\, (X_i - {\bar X})}{\sum_i\, (X_i - {\bar X})^2} \right] \nonumber\\
+%
+\end{eqnarray}
+%
+since $E[{\hat \beta}_0] =  E[{\bar Y}] = \beta_0$ and $E[{\hat \beta}_1] = \beta_1$, we get
+%
+\begin{eqnarray}
+{\rm Cov}[{\hat \beta}_0, {\hat \beta}_1] &=& E\left[ \frac{1}{n}\, \sum_i\, \epsilon_i \times
+   \frac{\sum_i\, \epsilon_i\, (X_i - {\bar X})}{\sum_i\, (X_i - {\bar X})^2} \right] \nonumber\\
+%
+ &=& \frac{1}{n\, \sum_i\, (X_i - {\bar X})^2}\, \sum_{i,j}\, (X_i - {\bar X})\, E[\epsilon_i\, \epsilon_j] \nonumber\\
+ &=& \frac{1}{n\, \sum_i\, (X_i - {\bar X})^2}\, \sum_i\, (X_i - {\bar X})\, \sigma^2 = 0
+\end{eqnarray}
+%
+now we have shown that $Y_{n+1},\, {\hat \beta}_0, \, {\hat \beta}_1$ are uncorrelated, it is straightforward 
+to compute ${\rm Var}[W]$:
+%
+\begin{eqnarray}
+{\rm Var}[W] &=& {\rm Var}[Y_{n+1}] + {\rm Var}[{\hat \beta}_0] + (X_{n+1} - {\bar X})^2\, {\rm Var}[{\hat \beta}_1] \nonumber\\
+  &=& \sigma^2 + \frac{\sigma^2}{n} + (X_{n+1} - {\bar X})^2\, \frac{\sigma^2}{\sum_i (X_i - {\bar X})^2} \nonumber\\
+\end{eqnarray}
+%
+\begin{equation}
+%
+\boxed{
+{\rm Var}[W] = \sigma^2\, \left[ 1 + \frac{1}{n} + \frac{(X_{n+1} - {\bar X})^2}{\sum_i (X_i - {\bar X})^2} \right]
+}
+\end{equation}
+%
+the equantity ${\rm Var}[W]$ is a measure of the error in prediction, so it determines the {\bf prediction interval} via:
+%
+\begin{equation}
+{\hat Y}_{n+1} \pm t_{\alpha/2, n-2}\, {\hat \sigma}\, 
+\left[ 1 + \frac{1}{n} + \frac{(X_{n+1} - {\bar X})^2}{\sum_i (X_i - {\bar X})^2} \right]^{1/2}
+\end{equation}
+%
+where $t_{\alpha/2, n-2}$ is the $\alpha$th $t$-quantile with $n-2$ dof, and ${\hat \sigma}$ is the unbaised estimate of 
+$\sigma$:
+%
+\begin{equation}
+{\hat \sigma}^2 = \frac{1}{n-2}\, \sum_{i=1}^n\, \left( Y_i - {\hat Y}_i \right)^2
+\end{equation}
+% 
+instead, the instrinsic error we make in ${\hat Y}_{n+1}$ is simply ${\rm Var}[{\hat Y}_{n+1}]$, which determines
+the {\bf confidence interval}. the confidence interval is always smaller than the prediction interval, and 
+is characterized by:
+%
+\begin{equation}
+\boxed{
+{\rm Var}[{\hat Y}_{n+1}] = \sigma^2\, 
+\left[\frac{1}{n} + \frac{(X_{n+1} - {\bar X})^2}{\sum_i (X_i - {\bar X})^2} \right]
+}
+\end{equation}
+%
+
+\vspace{0.5cm}
+
+{\bf Some properties of the residuals:} The residuals are defined by $e_i = Y_i - {\hat Y}_i$, and are
+used in the definition of the unbiased estimate of ${\rm Var}[\epsilon_i] = \sigma^2$. 
+The residuals satisfy the following properties:
+%
+\begin{equation}
+\boxed{
+\sum_i\, e_i = 0 \,\,\,\, , \,\,\,\, \sum_i\, e_i\, X_i = 0
+}
+\end{equation}
+%
+Here are the proofs:
+%
+\begin{eqnarray}
+\sum_i\, e_i &=& \sum_i\, \left( Y_i - {\hat \beta}_0 - {\hat \beta}_1\, X_i \right) \nonumber\\
+  &=& \sum_i\, \left( \beta_0 + \beta_1\, X_i + \epsilon_i - {\bar Y} + {\hat \beta}_1\, X_i - {\hat \beta}_1\, X_i \right) \nonumber\\
+  &=& \sum_i\, \left( \beta_0 + \beta_1\, X_i + \epsilon_i - \beta_0 - \beta_1\, \bar{X} - \frac{1}{n}\, \sum_j \epsilon_j
+      + {\hat \beta}_1\, \bar{X} - {\hat \beta}_1\, X_i \right) \nonumber\\
+  &=& \left( \beta_1 - {\hat \beta}_1 \right)\, \sum_i\, (X_i - {\bar X}) = 0 \nonumber\\
+%
+\sum_i\, e_i\, X_i &=& \sum_i\, e_i\, (X_i - {\bar X}) = 
+                  \sum_i\, \left( Y_i - {\hat \beta}_0 - {\hat \beta}_1\, X_i \right)\, (X_i - {\bar X}) \nonumber\\
+  &=& \sum_i\, \epsilon_i\, (X_i - {\bar X}) + (\beta_0 - {\hat \beta}_0)\, \sum_i\, (X_i - {\bar X}) + 
+      (\beta_1 - {\hat \beta}_1)\, \sum_i\, X_i\, (X_i - {\bar X}) \nonumber\\
+  &=& \sum_i\, \epsilon_i\, (X_i - {\bar X}) + (\beta_1 - {\hat \beta}_1)\, \sum_i\, (X_i - {\bar X})^2 \nonumber\\ 
+  &=& \sum_i\, \epsilon_i\, (X_i - {\bar X}) - \sum_i\, \epsilon_i\, (X_i - {\bar X}) = 0
+\end{eqnarray}
+%
+where we used the least squares fit for ${\hat \beta}_1$ in the last line.
+
+Now, let's compute the {\bf variance of the resudials} (using the normalized $X_i \rightarrow X_i - {\bar X}$): 
+%
+\begin{eqnarray}
+{\rm Var}[e_i] &=& {\rm Var}[Y_i - {\hat \beta}_0 - {\hat \beta}_1\, (X_i - {\bar X})] \nonumber\\
+               &=& {\rm Var}[Y_i] + {\rm Var}[{\hat \beta}_0] + (X_i - {\bar X})^2\, {\rm Var}[{\hat \beta}_1]
+                   -2\, {\rm Cov}\left[ Y_i, \, {\hat \beta}_0 + {\hat \beta}_1\, (X_i - {\bar X}) \right] \nonumber\\
+\end{eqnarray}
+% 
+where we have used the fact that ${\hat \beta}_0$ and ${\hat \beta}_1$ are uncorrelated and 
+${\rm Var}[A \pm B] = {\rm Var}[A] + {\rm Var}[B] \pm 2\, {\rm Cov}[A,B]$. The covariance term
+was not present when computing ${\rm Var}[W]$ since there, $Y_{n+1}$ was new data and not 
+correlated to ${\hat \beta}_0$ and ${\hat \beta}_1$. Now, notive that
+%
+\begin{eqnarray}
+&& Y_i - E[Y_i] = \epsilon_i \nonumber\\
+&& {\hat \beta}_0 + {\hat \beta}_1\, (X_i - {\bar X}) - E\left[ {\hat \beta}_0 + {\hat \beta}_1\, (X_i - {\bar X}) \right] = 
+   ({\hat \beta}_0 - \beta_0) + ({\hat \beta}_1 - \beta_1)\, (X_i - {\bar X})
+\end{eqnarray}
+%
+Thus, the covariance term becomes
+%
+\begin{eqnarray}
+{\rm Cov}\left[ Y_i, \, {\hat \beta}_0 + {\hat \beta}_1\, (X_i - {\bar X}) \right] &=&
+  E\left[ \epsilon_i\, \times \left( ({\hat \beta}_0 - \beta_0) + ({\hat \beta}_1 - \beta_1)\, (X_i - {\bar X}) \right) \right] \nonumber\\
+%
+&=& E\left[ ({\hat \beta}_0 - \beta_0)\, \epsilon_i \right] + (X_i - {\bar X})\, E\left[ ({\hat \beta}_1 - \beta_1)\, \epsilon_i \right]
+\end{eqnarray}
+%
+Now, $E[({\hat \beta}_0 - \beta_0)\, \epsilon_i] = E[({\bar Y}-\beta_0)\, \epsilon_i] = 
+ E[ \frac{1}{n}\, \sum_j\, \epsilon_j\, \epsilon_i] = \sigma^2/n$. Similarly, 
+%
+\begin{equation}
+E\left[ ({\hat \beta}_1 - \beta_1)\, \epsilon_i \right] = \frac{1}{\sum_j\, (X_j - {\bar X})^2}\, 
+  E \left[ \sum_j\, (X_j - {\bar X})\, \epsilon_j\, \epsilon_i \right] 
+    = \frac{(X_i-{\bar X})\, \sigma^2}{\sum_j\, (X_j - {\bar X})^2}
+\end{equation}
+%
+Thus, 
+%
+\begin{equation}
+{\rm Cov}\left[ Y_i, \, {\hat \beta}_0 + {\hat \beta}_1\, (X_i - {\bar X}) \right] = 
+\sigma^2\, \left[ 1 + \frac{(X_i-{\bar X})^2}{\sum_j\, (X_j - {\bar X})^2} \right]
+\end{equation}
+%
+The calculation of ${\rm Var}[Y_i] + {\rm Var}[{\hat \beta}_0] + (X_i - {\bar X})^2\, {\rm Var}[{\hat \beta}_1]$ 
+follows similarly to ${\rm Var}[W]$, so finally combining with the covariance term we get
+%
+\begin{equation}
+\boxed{
+{\rm Var}[e_i] = \sigma^2\, \left[  1 - \frac{1}{n} - \frac{(X_i-{\bar X})^2}{\sum_j\, (X_j - {\bar X})^2} \right]
+}
+\end{equation}
+%      
+
+\vspace{0.5cm}
+
+{\bf Multiple features:} Consider the case of two features (can easily be generalized to more). Assume that $\beta_0=0$ (i.e.
+$\rightarrow Y - \beta_0$ is being fitted) then, the least-squares minimization is performed on
+%
+\begin{equation}
+S^2 = \sum_{i=1}^n\, \left( Y_i - \beta_1\, X_{1i} - \beta_2\, X_{2i} \right)^2
+\end{equation}
+%
+Evaluating partial derivatives with respect to $\beta_1$, $\beta_2$ and setting them to zero, we obtain
+%
+\begin{equation}
+\left[ \begin{array}{cc} 
+    \sum_i\, X_{1i}^2 & \sum_i\, X_{1i}\, X_{2i} \\
+    \sum_i\, X_{1i}\, X_{2i} & \sum_i\, X_{2i}^2 
+       \end{array}
+\right]\, 
+\left[ \begin{array}{c}
+    {\hat \beta}_1 \\ {\hat \beta}_2
+       \end{array}
+\right] = 
+\left[ \begin{array}{c}
+    \sum_i\, Y_i\, X_{1i} \\ \sum_i\, Y_i\, X_{2i}
+       \end{array}
+\right]
+\end{equation}
+%
+This equation is easily solved for ${\hat \beta}_1$ and ${\hat \beta}_2$. 
+The solution is given by
+%
+\begin{eqnarray}
+&& \Delta = \left( \sum_i\, X_{1i}^2 \right)\, \left( \sum_i\, X_{2i}^2 \right) - \left( \sum_i\, X_{1i}\, X_{2i} \right)^2 \nonumber\\
+&& {\hat \beta}_1 = \left[ \left( \sum_i\, X_{2i}^2 \right)\, \left( \sum_i\, Y_i\, X_{1i} \right) - 
+			   \left( \sum_i\, X_{1i}\, X_{2i} \right)\, \left( \sum_i\, Y_i\, X_{2i} \right) \right] / \Delta \nonumber\\
+%
+&& {\hat \beta}_2 = \left[ \left( \sum_i\, X_{1i}^2 \right)\, \left( \sum_i\, Y_i\, X_{2i} \right) - 
+			   \left( \sum_i\, X_{1i}\, X_{2i} \right)\, \left( \sum_i\, Y_i\, X_{1i} \right) \right] / \Delta 
+\end{eqnarray}
+%
+However, we would like to
+express the solutions in terms of residuals. We define:
+%
+\begin{equation}
+e_{i,\, X_1 \vert X_2} = X_{1i} - \left( \frac{\sum_j\, X_{2j}\, X_{1j} } {\sum_j\, X_{2j}^2 } \right)\, X_{2i}
+\end{equation}
+% 
+which is {\bf the residual having fit $X_2$ on $X_1$}. The term in the paranthesis is the regression coefficient (via least squares)
+if we were to fit $X_{1i} = \beta\, X_{2i}$ and the reisual is $X_{1i} - {\hat \beta}\, X_{2i}$.
+The residuals $e_{i, \, Y \vert X_2}$, $e_{i, \, Y \vert X_1}$ are similarly defined.
+
+After some algebra, we get
+%
+\begin{eqnarray}
+&& {\hat \beta}_1 = \frac{ \sum_i\, e_{i, \, Y \vert X_{2}}\, e_{i, \, X_{1} \vert X_{2}}  } 
+			 { \sum_i\, e_{i, \, X_{1} \vert X_{2}}^2 } \nonumber\\
+%
+&& {\hat \beta}_2 = \frac{ \sum_i\, e_{i, \, Y \vert X_{1}}\, e_{i, \, X_{2} \vert X_{1}}  } 
+			 { \sum_i\, e_{i, \, X_{2} \vert X_{1}}^2 } 
+\end{eqnarray}
+%
+In other words, the regression estimate for $\beta_1$ is the regression through the origin estimate having regressed
+$X_2$ out of both the reponse and the predictors (similar for $\beta_2$).  
+Moreover, if we were to fit the regression through the origin between the residuals $e_{i, \, Y \vert X_2}$
+and $e_{i, \, X_1 \vert X_2}$:
+%
+\begin{equation}
+e_{i, \, Y \vert X_2} = \gamma\, e_{i, \, X_1 \vert X_2}
+\end{equation}
+%
+we would get
+%
+\begin{equation}
+{\hat \gamma} = \frac{ \sum_i\, e_{i, \, Y \vert X_{2}}\, e_{i, \, X_{1} \vert X_{2}}  } 
+                         { \sum_i\, e_{i, \, X_{1} \vert X_{2}}^2 }
+\end{equation}
+%
+which is equivalent to ${\hat \beta}_1$. So the residuals having regressed out $X_2$ contains
+the information on the $X_1$ depenence. This is the reason why we see left over variability
+in residual plots if there is a feature which is not fitted.
+
+\vspace{0.5cm}
+
+{\bf Bias-Variance trade-off}
+
+Suppose we know the true model $f(X)$ that characterizes the response $Y$, i.e.
+%
+\begin{equation}
+Y = f(X) + \epsilon
+\end{equation}
+%
+Here, $\epsilon$ represents the irreducible error, i.e. the error that is still there even if we knew the exact model $f(X)$. 
+Let's assume that we have a estimate of the true model by some function $\hat{f}(X)$. Then, we can compute the total 
+error we make (residual sums squared) as
+%
+\begin{eqnarray}
+E\left[ (Y - \hat{f}(X))^2 \right] &=& E \left[ \epsilon + (f(X) - \hat{f}(X))^2 \right] \nonumber\\
+&=& {\rm Var}(\epsilon) + E\left[ (f(X) - \hat{f}(X))^2 \right] 
+\end{eqnarray}
+% 
+where we have used the fact that $E[\epsilon]=0$ so ${\rm Var}(\epsilon) = E[\epsilon^2]$, and that $\epsilon$ and
+$f(X) - \hat{f}(X)$ are uncorrelated. The first term above is the irreducible error. Let us look into the
+second term:
+%
+\begin{eqnarray}
+E\left[ (f(X) - \hat{f}(X))^2 \right] &=& E[ f(X)^2 ] - E[\hat{f}(X)]^2 + E[\hat{f}(X)]^2 - 2\, f(X)\, E[\hat{f}(X)] + f(X)^2 \nonumber\\
+ &=& {\rm Var}(\hat{f}(X)) + \left( E[\hat{f}(X)] - f(X) \right)^2 \nonumber\\
+ &=& {\rm Var}(\hat{f}(X)) + {\rm Bias}(\hat{f}(X))
+\end{eqnarray}
+%
+The first term above is the variance of $\hat{f}(X)$ and the second one is bias, which measures how much $\hat{f}(X)$ 
+deviates from the true $f(X)$. By including more flexibility in model $\hat{f}(X)$ we can reduce the bias, but the
+variance increases (the bias-variance trade-off).
+
+\vspace{0.5cm}
+
+{\bf Maximum Likelihoods:}
+\end{document}
