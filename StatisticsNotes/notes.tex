@@ -115,7 +115,7 @@ since for larger $n$, $\sigma^2$ will be large as well ($\sigma^2 = \sum_i\, \si
 series expansion in $\sigma_i/\sigma$ is convergent. Thus, the mgf of the variate
 $(Y-\mu)/\sigma$ is $e^{\frac{1}{2}\, t^2}$ which is the mgf of the standard normal variate.
 
-A corlollary of the central limit theorem is that the distributions of the sample means is
+A corollary of the central limit theorem is that the distributions of the sample means is
 approximately normally distributed: Let $X_i$ be a sample from a population. The sample mean of $n$ samples
 is given by
 %
@@ -452,14 +452,14 @@ S_X^2 &=& \frac{1}{n-1}\, \sum_{i=1}^n\, (X_i - {\bar X})^2
 to normalize:
 %
 \begin{equation}
-{\hat Y}_i = \beta_0 + \beta_1\, (X_i - {\bar X}) + \epsilon_i
+Y_i = \beta_0 + \beta_1\, (X_i - {\bar X}) + \epsilon_i
 \end{equation}
 %
 this is equivalent to redefining $\beta_0 \rightarrow \beta_0 - \beta_1\, {\bar X}$, which results in
 ${\hat \beta}_0 = {\bar Y}$. Now it is easy to see the following apply:
 %
 \begin{eqnarray}
-&& {\bar X} = \beta_0 + \frac{1}{n}\, \sum_i\, \epsilon_i \,\,\,\, , \,\,\,\, 
+&& {\bar Y} = \beta_0 + \frac{1}{n}\, \sum_i\, \epsilon_i \,\,\,\, , \,\,\,\, 
 {\bar Y} = {\hat \beta}_0 \sim N(\beta_0, \frac{\sigma^2}{n}) \nonumber\\
 && E[Y_i] = \beta_0 + \beta_1\, (X_i - {\bar X}) \,\,\,\, , \,\,\,\, {\rm Var}[Y_i] = {\rm Var}[\epsilon_i] = \sigma^2 \,\,\,\, , \,\,\,\,
    Y_i \sim N\left( \beta_0 + \beta_1\, ( X_i - {\bar X}), \sigma^2 \right) \nonumber\\ 
@@ -745,8 +745,14 @@ second term:
 \begin{eqnarray}
 E\left[ (f(X) - \hat{f}(X))^2 \right] &=& E[ f(X)^2 ] - E[\hat{f}(X)]^2 + E[\hat{f}(X)]^2 - 2\, f(X)\, E[\hat{f}(X)] + f(X)^2 \nonumber\\
  &=& {\rm Var}(\hat{f}(X)) + \left( E[\hat{f}(X)] - f(X) \right)^2 \nonumber\\
- &=& {\rm Var}(\hat{f}(X)) + {\rm Bias}(\hat{f}(X))
+ &=& {\rm Var}(\hat{f}(X)) + {\rm Bias}(\hat{f}(X))^2
 \end{eqnarray}
+%
+where the bias is defined as
+%
+\begin{equation}
+{\rm Bias}({\hat f}(X)) = E[{\hat f}(X)] - f(X)
+\end{equation}
 %
 The first term above is the variance of $\hat{f}(X)$ and the second one is bias, which measures how much $\hat{f}(X)$ 
 deviates from the true $f(X)$. By including more flexibility in model $\hat{f}(X)$ we can reduce the bias, but the
@@ -755,4 +761,26 @@ variance increases (the bias-variance trade-off).
 \vspace{0.5cm}
 
 {\bf Maximum Likelihoods:}
+
+The determination of linear regression parameters through minimization of residual sums squared can be
+thought of a maximizing the likelihood function of ${\bf Y}$. Given $Y_i$'s are random variables
+with identical variances $\sigma^2$, their conditional probability distribution (given
+data $X_i$ and parameters $\beta = (\beta_0, \beta_1)$) can be written as
+%
+\begin{equation}
+P({\bf Y} | {\bf X}; \beta) = \prod_{i=1}^n\, P(Y_i | X_i; \beta)
+\end{equation}
+%
+The optimal parameters ${\hat \beta} = ({\hat \beta}_0, {\hat \beta}_1)$ can be obtained from maximizing this
+joint probability (i.e. likelihood), or equivalently its logarithm. The probability distribution 
+function for each $Y_i$ is Gaussian centered around ${\hat Y}_i$ (see above) with variance $\sigma^2$,
+so the maximum likelihood problem reduces to
+%
+\begin{eqnarray}
+{\hat \beta} &=& {\rm argmax}_{\beta} \left[ \sum_{i=1}^n \left(-\frac{1}{2}\, \log(2\pi) + \log \sigma - 
+                                             \frac{\left\vert {\hat Y}_i - Y_i \right\vert^2}{2 \sigma^2} \right) \right] \nonumber\\
+             &=& {\rm argmin}_{\beta} \left[ \sum_{i=1}^n \left\vert {\hat Y}_i - Y_i \right\vert^2 \right] 
+\end{eqnarray}
+%
+
 \end{document}
