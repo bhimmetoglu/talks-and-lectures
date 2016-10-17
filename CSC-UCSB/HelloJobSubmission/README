@@ -1,0 +1,7 @@
+First compile by
+
+mpicc -o hello.x hello.c
+
+Then submit to the short queue by
+
+qsub -q short submit.job
