@@ -15,10 +15,18 @@ cd CSCexercises
 qstat > qstat.log # Redirect the output of qstat to qstat.log 
 
 # How many entries are there ?
+echo "Number of Jobs:"
 wc -l < qstat.log # Check man page for wc and option l
 
-# Get the lines that match to "gpuq", i.e. how many jobs are running on the GPU queue?
-grep 'gpuq' qstat.log 
+# Interrupt, wait for user 
+read -p "Press any key to continue... "
+
+
+# Get the lines that match to batch", i.e. how many jobs are running on the batch queue?
+grep 'batch' qstat.log | head -10  # Show only first 10 lines
+
+# Interrupt, wait for user 
+read -p "Press any key to continue... "
 
 # Now create output from showq
 showq > showq.log
@@ -26,17 +34,20 @@ showq > showq.log
 # Show 10 lines after the matching string 'IDLE JOBS'
 grep -A 10 'IDLE JOBS' showq.log
 
-# For all jobs in the qpuq, write their JobId's
-nGPU=`grep 'gpuq' qstat.log | wc -l` # Pipe the output of grep to wc -l. Notice the ` ` that wraps the commands 
+# Interrupt, wait for user
+read -p "Press any key to continue... "
 
-echo  "  Time Use   jobID" > gpuJobs.log
-for index in `seq 1 $nGPU` # Check the man page for seq. Notice the use of $ sign to point to nGPU declared above 
+# For all jobs in the batch queue, write their JobId's
+nbatch=`grep 'batch' qstat.log | wc -l` # Pipe the output of grep to wc -l. Notice the ` ` that wraps the commands 
+
+echo  "  Time Use   jobID" > batchJobs.log
+for index in `seq 1 $nbatch` # Check the man page for seq. Notice the use of $ sign to point to nbatch declared above 
 do
 
-jobID=`grep 'gpuq' qstat.log | head -$index | tail -1 | cut -c '1-20'` # Check the man page for cut
-timeUse=`grep 'gpuq' qstat.log | head -$index | tail -1 | cut -c '60-68'`
-cat >> gpuJobs.log << EOF # Append to gpuJobs.log. Perform the options below until EOF
- $timeUse $jobID
+jobID=`grep 'batch' qstat.log | head -$index | tail -1 | cut -c '1-20'` # Check the man page for cut
+timeUse=`grep 'batch' qstat.log | head -$index | tail -1 | cut -c '60-68'`
+cat >> batchJobs.log << EOF # Append to batchJobs.log. Perform the options below until EOF
+ $timeUse   $jobID
 EOF
 
 done

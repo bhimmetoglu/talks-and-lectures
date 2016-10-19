@@ -1,0 +1,8 @@
+My contribution to pi: 0.7854606618066474 from process: 0 of 4 
+My contribution to pi: 0.7853773319444501 from process: 2 of 4 
+My contribution to pi: 0.7854189986120201 from process: 1 of 4 
+My contribution to pi: 0.7853356618053777 from process: 3 of 4 
+----- END OF CALCULATION -----
+Calculated valuf of pi with 12000 divisions: 3.1415926541684955 
+Error in pi= 0.0000000005787024
+Time to calculate pi is: 0.000403 s

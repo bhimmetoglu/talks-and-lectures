@@ -1,0 +1,11 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=12
+#PBS -l walltime=00:05:00
+#PBS -N MPI_PI
+#PBS -V
+
+cd $PBS_O_WORKDIR # Goto job submission directory
+
+# Using 2400 divisions to compute pi
+mpirun -np 12 -machinefile $PBS_NODEFILE  ./mpi_pi.x 2400 
+

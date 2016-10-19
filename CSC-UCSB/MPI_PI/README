@@ -1,0 +1,5 @@
+Compile using
+mpicc -o mpi_pi.x mpi_pi.c
+
+Submit using
+qsub -q short submit.job
