@@ -1,8 +1,16 @@
-My contribution to pi: 0.7854606618066474 from process: 0 of 4 
-My contribution to pi: 0.7853773319444501 from process: 2 of 4 
-My contribution to pi: 0.7854189986120201 from process: 1 of 4 
-My contribution to pi: 0.7853356618053777 from process: 3 of 4 
+My contribution to pi: 0.2617648353915497 from process: 6 of 12 
+My contribution to pi: 0.2616953616828803 from process: 7 of 12 
+My contribution to pi: 0.2616258591294491 from process: 8 of 12 
+My contribution to pi: 0.2615563277915383 from process: 9 of 12 
+My contribution to pi: 0.2614867677294295 from process: 10 of 12 
+My contribution to pi: 0.2614171790034041 from process: 11 of 12 
+My contribution to pi: 0.2621810685277651 from process: 0 of 12 
 ----- END OF CALCULATION -----
-Calculated valuf of pi with 12000 divisions: 3.1415926541684955 
-Error in pi= 0.0000000005787024
-Time to calculate pi is: 0.000403 s
+Calculated valuf of pi with 2400 divisions: 3.1415926680573856 
+Error in pi= 0.0000000144675925
+Time to calculate pi is: 0.000381 s
+My contribution to pi: 0.2621117691535916 from process: 1 of 12 
+My contribution to pi: 0.2619730828461646 from process: 3 of 12 
+My contribution to pi: 0.2619036960334740 from process: 4 of 12 
+My contribution to pi: 0.2618342801951750 from process: 5 of 12 
+My contribution to pi: 0.2620424405729643 from process: 2 of 12 
