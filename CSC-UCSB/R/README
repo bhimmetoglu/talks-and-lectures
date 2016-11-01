@@ -1,0 +1,6 @@
+# clusterR folder contains 
+  coinFlips.R, monteCarlo.R, monteCarloPar.R, monteCarloSer.R
+
+# titanic folder contains
+  data           : training and test data
+  titanicModel.R : Predicting survival based on logistic regression
