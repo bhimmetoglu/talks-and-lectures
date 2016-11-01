@@ -1,5 +1,6 @@
 # clusterR folder contains 
-  coinFlips.R, monteCarlo.R, monteCarloPar.R, monteCarloSer.R
+  files   : coinFlips.R, monteCarlo.R, monteCarloPar.R, monteCarloSer.R
+  archive : Contains outputs for reference
 
 # titanic folder contains
   data           : training and test data
