@@ -1,0 +1,9 @@
+# pi folder contains 
+  files   : calculate_pi.m, trapez.m 
+
+# monteCarlo folder contains
+  files   : exact.m, monteCarlo.m, run_mcarlo_parfor.m, run_mcarlo_serial.m, run_mcarlo_spmd.m
+
+# Note: When timings are calculated with "tic" and "toc", don't forget to divide by the number
+        of workers in parallel processing! 
+

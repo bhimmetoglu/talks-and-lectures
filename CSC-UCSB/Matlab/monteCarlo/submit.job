@@ -1,0 +1,11 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=12
+#PBS -l walltime=01:00:00
+#PBS -N MC
+#PBS -V
+
+cd $PBS_O_WORKDIR 
+
+matlab -nodisplay -nodesktop -nosplash < run_mcarlo_serial.m > out_ser
+matlab -nodisplay -nodesktop -nosplash < run_mcarlo_spmd.m > out_spmd
+matlab -nodisplay -nodesktop -nosplash < run_mcarlo_parfor.m > out_parfor
