@@ -1,0 +1,180 @@
+---
+title: "Exploring the HAR data"
+output: html_notebook
+---
+
+In this notebook I explore the [Human Activity Recognition dataset](https://archive.ics.uci.edu/ml/machine-learning-databases/00240/) from the UCI Machnine Learning Repository. 
+
+### Loading data
+
+```{r}
+library(plyr)
+library(dplyr)
+library(xgboost)
+library(MLmetrics)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+
+source('prepare_data.R')
+```
+
+Data cleaning and preparation is performed using `prepare_data.py`. Let's first visualize the data using the principal components:
+
+```{r}
+X_tr <- X_full %>% filter(is.train == 1) %>% dplyr::select(-is.train) # Select training data
+pca_tr <- prcomp(X_tr) # Get principal components
+
+# Plot  
+dat_pca <- data.frame(pc1 = pca_tr$x[,1], pc2 = pca_tr$x[,2], pc3 = pca_tr$x[,3], 
+                      label = as.factor(y_train$label))
+levels(dat_pca$label) <- c("WALKING", "WALKING.UP", "WALKING.DOWN", "SITTING", "STANDING", "LAYING")
+
+g0 <- ggplot(data = dat_pca, aes(pc1, pc2)) + geom_point(aes(color = label))
+g0
+```
+ It looks like just by using the first principal components, one may be able to differenciate between different activitivies (labels). Specifically, `WALKING`, `WALKING.UP` and `WALKING.DOWN` can be classified almost with a linear decision boundary, while `SITTING`, `STANDING` and `LAYING` are more difficult to classify. Of course, we are looking only into the first principal components which explain the most variance in the data. A larger variance in features (which are kinematic variables) means a larger range of motion, so this behavior is expected. If we were to look at principal components with lower variance, we may actually distinguish the last 3 labels better. In fact, looking at the 4th and 5th principal components, we observe 
+ 
+```{r}
+# Plot  
+dat_pca <- data.frame(pc3 = pca_tr$x[,3], pc4 = pca_tr$x[,4], pc5 = pca_tr$x[,5], 
+                      label = as.factor(y_train$label))
+levels(dat_pca$label) <- c("WALKING", "WALKING.UP", "WALKING.DOWN", "SITTING", "STANDING", "LAYING")
+
+g1 <- ggplot(data = dat_pca, aes(pc4, pc5)) + geom_point(aes(color = label))
+g1
+```
+This looks much better for `SITTING`, `STANDING` and `LAYING`. From this simple investigation, it looks like that linear classifiers may actually do a decent job. 
+ 
+### Gradient Boosting: Tree Booster
+The tree booster have a number of hyperparameters that need to be determined using cross-validation (CV). This is performed in the script `train_xgboost.R`. Here, we will use the hyperparameters determined from 5-fold CV. First, we convert the training and testing data into matrices that XGBoost likes to use:
+
+```{r}
+library(xgboost)
+# Split back into train/test
+X_tr <- X_full %>% filter(is.train == 1) %>% dplyr::select(-is.train)
+X_tst <- X_full %>% filter(is.train == 0) %>% dplyr::select(-is.train)
+
+# XGboost wants levels to start with 0
+y_tr <- as.factor(y_train$label)
+y_tr <- revalue(y_tr, c('6'='5', '5'='4', '4'='3', '3'='2', '2'='1', '1'='0'))
+y_tr <- as.numeric(levels(y_tr))[y_tr]
+y_tst <- as.factor(y_test$label)
+y_tst <- revalue(y_tst, c('6'='5', '5'='4', '4'='3', '3'='2', '2'='1', '1'='0'))
+y_tst <- as.numeric(levels(y_tst))[y_tst]
+
+# XGB style matrices
+dtrain <- xgb.DMatrix(as.matrix(X_tr), label = y_tr)
+dtest <- xgb.DMatrix(as.matrix(X_tst), label = y_tst)
+watchlist <- list(train=dtrain, test=dtest)
+```
+
+Now, we can fit the tree booster:
+```{r}
+# Use best model params
+params <- list(booster = "gbtree",
+               eval_metric = "mlogloss",
+               objective = "multi:softprob",
+               eta = 0.50,     
+               max_depth = 2, 
+               gamma = 0.0,    
+               min_child_weight = 0, 
+               colsample_bytree = 0.2,
+               subsample = 1)
+
+modxgb <- xgb.train(params = params,
+                    data = dtrain,
+                    num_class = 6,
+                    nrounds = 499,
+                    watchlist = watchlist,
+                    verbose = 0) # Change this to 1 to watch the progress
+```
+Let's look at the feature importances:
+
+```{r}
+# Importance matrix
+importance_matrix <- xgb.importance(model = modxgb) %>% 
+  mutate(Feature = as.integer(Feature))
+top10 <- importance_matrix[1:10, ]$Feature
+top10 <- paste0("f", top10)  # Select top 10 fetures from importance
+
+# Names of these features
+feat_names_10 <- feat_names %>% filter(code %in% top10) %>% 
+  mutate(code = substring(code, 2)) %>%
+  mutate(code = as.integer(code))
+reord <- match(feat_names_10$code, importance_matrix[1:10,]$Feature)
+feat_names_10 %>% dplyr::slice(reord)
+```
+Now, let's plot the importance as a function of [Gain](http://xgboost.readthedocs.io/en/latest/R-package/discoverYourData.html) in trees split when a specific feature is used. 
+
+```{r}
+plt.data <- importance_matrix[1:10, ]
+plt.data$Feature <- feat_names_10 %>% dplyr::slice(reord) %>% dplyr::select(feature)
+xgb.plot.importance(plt.data)
+```
+Finally, let's test the model performance on the test set
+
+```{r}
+# Predict
+pred_tst <- predict(modxgb, newdata = dtest)
+
+# Reshape in N x n_class
+pred_matrix <- matrix(pred_tst, nrow = nrow(X_tst), byrow = TRUE) # Reshape for class probs
+
+# Accuracy
+pred_labels <- apply(pred_matrix, 1, which.max)
+cat("Accuracy:", sum(pred_labels == y_test$label) / length(y_test$label), "\n")
+
+# One-hot encoding and multi-class log loss
+expanded_tst <- diag(6)
+expanded_tst <- t(expanded_tst[, y_test$label])
+cat("MLogLoss: ", mlogloss(pred_matrix, expanded_tst), "\n")
+```
+The confusion matrix provides us information on how well we did for each class:
+```{r}
+library(caret)
+confusionMatrix(pred_labels, y_test$label)
+```
+
+
+### Gradient Boosting: Linear Booster
+Similar to the tree booster, the linear booster has a bunch of hyperparameters that need to be determined by CV. This is performed in the script `train_xgboost_linear.R`. Here, we will use the hyperparameters determined from 5-fold CV. 
+
+```{r}
+# Use best model params
+params <- list(booster = "gblinear",
+               eval_metric = "mlogloss",
+               objective = "multi:softprob",
+               alpha = 0.1,
+               lambda = 1,
+               eta = 0.3)
+
+modxgb <- xgb.train(params = params,
+                    data = dtrain,
+                    num_class = 6,
+                    nrounds = 497,
+                    watchlist = watchlist,
+                    verbose = 0) # Change this to 1 to watch the progress
+```
+Now predict on the test set
+
+```{r}
+# Predict
+pred_tst <- predict(modxgb, newdata = dtest)
+
+# Reshape in N x n_class
+pred_matrix <- matrix(pred_tst, nrow = nrow(X_tst), byrow = TRUE) # Reshape for class probs
+
+# Accuracy
+pred_labels <- apply(pred_matrix, 1, which.max)
+cat("Accuracy:", sum(pred_labels == y_test$label) / length(y_test$label), "\n")
+
+# Multi-class log loss
+cat("MLogLoss: ", mlogloss(pred_matrix, expanded_tst), "\n")
+```
+And the confusion matrix
+```{r}
+confusionMatrix(pred_labels, y_test$label)
+```
+The results are pretty similar for both boosters. 
+
